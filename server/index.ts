@@ -1,18 +1,22 @@
-import LocalServer from './clases/Server';
-const server = new LocalServer(3030);
-
+import dotenv from 'dotenv';
+dotenv.config();
 import Express from 'express';
-server.getApp().use(Express.json());
-server.getApp().use(Express.urlencoded({extended: true}));
-
 import CORS from 'cors';
-server.getApp().use(CORS({origin: true, credentials: true}));
+import LocalServer from './clases/Server';
+
+const server = LocalServer.getInstance();
+const app: Express.Application = server.getApp();
+
+app.use(Express.json());
+app.use(Express.urlencoded({extended: true}));
+
+app.use(CORS({origin: true, credentials: true }));
 
 import routes from './rutas/routes';
-server.getApp().use('/', routes);
+app.use('/', routes);
 
 server.escucharSockets();
 
 server.start(() => {
-    console.log('Servidor escuchando en el puerto: ', server.getPort());
+    console.log('Servidor escuchando en el puerto:',server.getPort());
 });
