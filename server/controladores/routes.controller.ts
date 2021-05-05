@@ -1,4 +1,6 @@
 import { Request, Response }  from 'express';
+import { Server } from 'socket.io';
+import LocalServer from '../clases/Server';
 
 export function getMensajes(req: Request, res: Response) {
     res.json({
@@ -8,10 +10,26 @@ export function getMensajes(req: Request, res: Response) {
 }
 
 export function postMensaje(req: Request, res: Response) {
+    const server = LocalServer.instance;
+    
+    const { de, cuerpo } = req.body;
     const id = req.params.id;
+
+    
+    const payload = {
+        de,
+        cuerpo
+    }
+    
+    if (!id) {
+        server.io.emit('mensaje-nuevo', payload);
+    } else {
+        server.io.in(id).emit('mensaje-privado', payload);
+    }
+
     res.json({
-        ok: true,
-        msg: 'Post Mensaje',
+        de,
+        cuerpo,
         id
     });
 }

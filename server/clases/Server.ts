@@ -1,25 +1,25 @@
 import Express from 'express';
-import { Server, Socket } from 'socket.io';
+import io from 'socket.io';
 import SocketMethods from '../sockets/sockets';
 import http from 'http';
 
 export default class LocalServer {
 
-    private static instance: LocalServer;
+    private static _instance: LocalServer;
 
     private app: Express.Application;
     private static port: number = Number(process.env.PORT);
     private httpServer: http.Server;
-    private io: Server;
+    public io: io.Server;
 
     private constructor() {
         this.app = Express();
         this.httpServer = http.createServer(this.app);
-        this.io = new Server(this.httpServer, {cors: {  origin: true, credentials: true }});
+        this.io = new io.Server(this.httpServer, {cors: {  origin: true, credentials: true }});
     }
 
-    public static getInstance() {
-        return LocalServer.instance || (LocalServer.instance = new LocalServer());
+    public static get instance() {
+        return LocalServer._instance || (LocalServer._instance = new LocalServer());
     }
 
     public start(callback: Function): void {
@@ -28,7 +28,7 @@ export default class LocalServer {
 
     public escucharSockets() {
         console.log('Escuchando conexiones - socket');
-        this.io.on('connection', (cliente: Socket) => {
+        this.io.on('connection', (cliente: io.Socket) => {
             console.log('cliente conectado, cliente: ', cliente.id);
 
             SocketMethods.conectarCliente(cliente);

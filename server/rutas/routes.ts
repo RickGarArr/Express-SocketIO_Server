@@ -6,4 +6,6 @@ router.get('/mensajes', getMensajes);
 
 router.post('/mensajes/:id', postMensaje);
 
+router.post('/mensajes', postMensaje);
+
 export default router;

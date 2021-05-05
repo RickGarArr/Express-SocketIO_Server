@@ -4,7 +4,7 @@ import Express from 'express';
 import CORS from 'cors';
 import LocalServer from './clases/Server';
 
-const server = LocalServer.getInstance();
+const server = LocalServer.instance;
 const app: Express.Application = server.getApp();
 
 app.use(Express.json());
